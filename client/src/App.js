@@ -6,7 +6,6 @@ import "react-s-alert/dist/s-alert-default.css";
 import "react-s-alert/dist/s-alert-css-effects/slide.css";
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import brands from "@fortawesome/fontawesome-free-brands";
-
 var IN = null;
 
 class App extends Component {
@@ -71,6 +70,23 @@ class App extends Component {
       .body()
       .result(this.updateLinkedinProfile);
   };
+  
+  showPages = () => {
+    let alpha;
+    console.log('100');
+    console.log(IN.API);
+    IN.API.Raw(
+      "/companies?format=json&is-company-admin=true"
+
+    )
+      .method("GET")
+      .body()
+      .result(this.getPage);
+  };
+
+  getPage = page => {
+    console.log(page);
+  };
 
   updateLinkedinProfile = profile => {
     console.log(profile)
@@ -89,8 +105,10 @@ class App extends Component {
 
   shareToLinkedin = () => {
     // Build the JSON payload containing the content to be shared
+
+    console.log(this.state);
     var payload = {
-      comment: `Check out ${window.location.href} !`,
+      comment: `Massage sent from react app.`,
       visibility: {
         code: "anyone"
       }
@@ -102,6 +120,24 @@ class App extends Component {
       .result(this.onShareSuccess)
       .error(this.onShareError);
   };
+  // Methood to send data to a post
+
+  shareToPage = () => {
+    console.log('V8');
+    console.log(this.state);
+    var payload = {
+      comment: `Massage sent from react app.`,
+      visibility: {
+        code: "anyone"
+      }
+    };
+
+    IN.API.Raw("/companies/33455870/shares?format=json")
+      .method("POST")
+      .body(JSON.stringify(payload))
+      .result(this.onShareSuccess)
+      .error(this.onShareError);
+  }
 
   onShareSuccess = data => {
     console.log(data);
@@ -155,22 +191,16 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">React Linkedin Login</h1>
+          <h1 className="App-title">React Linkin Login</h1>
           <p className="App-intro">A demo page for Linkedin login</p>
-          <FontAwesomeIcon icon={["fab", "github"]} />{" "}
-          <a
-            href="https://github.com/tonyxu-io/React-Linkedin-Login"
-            className="github-link"
-          >
-            tonyxu-io/React-Linkedin-Login
-          </a>
-          <Alert />
         </header>
         <div className="App-body">
           {this.state.isAuthorized ? (
             <span>
-              <button onClick={this.linkedinLogout}>Linkedin Logout</button>
+              <button onClick={this.linkedinLogout}>Ln Logout</button>
               <button onClick={this.shareToLinkedin}>Share on Linkedin</button>
+              <button onClick={this.shareToPage}> Share on Page </button>
+              <button onClick={this.showPages}> Show Pages </button>
             </span>
           ) : (
             <button onClick={this.linkedinAuthorize}>Linkedin Login</button>
